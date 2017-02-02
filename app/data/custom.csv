@@ -1,0 +1,3 @@
+datetime,OS,browser,browserVersion,colorDepth,currentResolution,fingerprint,isFlash,isJava,isSilverlight,language,timeZone
+2017-01-30 23:04:44.675395,Mac OS,Chrome,55.0.2883.95,24,1440x900,285113027,True,False,False,en-GB,CET
+2017-01-30 23:05:09.919524,Mac OS,Firefox,55.0.2883.95,24,1440x900,285113028,False,False,False,fr-FR,CET
