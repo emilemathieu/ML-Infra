@@ -21,3 +21,11 @@ sudo ln -s /opt/python3/bin/pyenv /usr/bin/pyenv
 ```
 virtualenv ~/ML-Infa-env
 source ~/ML-Infa-env/bin/activate
+```
+
+### Install Git
+`sudo yum install git`
+
+### Launch Project
+
+`git clone git@github.com:emilemathieu/ML-Infra.git`
