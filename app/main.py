@@ -9,40 +9,36 @@ from flask import Flask, request, jsonify
 # from flask_cors import CORS, cross_origin
 import pandas as pd
 from sklearn.externals import joblib
+from sklearn.feature_extraction import FeatureHasher
 
-from datetime import timedelta
+from datetime import timedelta, datetime
 from flask import make_response, request, current_app
 from functools import update_wrapper
 
 app = Flask(__name__)
 
 # inputs
-training_data = 'data/titanic.csv'
-include = ['Age', 'Sex', 'Embarked', 'Survived']
+training_data = 'data/custom.csv'
+include = ['OS', 'browser', 'currentResolution', 'currentResolution', 'language', 'timeZone', 'isFlash']
 dependent_variable = include[-1]
 
 model_directory = 'model'
 model_file_name = '%s/model.pkl' % model_directory
 model_columns_file_name = '%s/model_columns.pkl' % model_directory
-data_file_name = 'data/custom.csv'
 
 # These will be populated at training time
 model_columns = None
 clf = None
-
 
 @app.route('/predict', methods=['POST'])
 def predict():
     if clf:
         try:
             json_ = request.json
-            query = pd.get_dummies(pd.DataFrame(json_))
-
-            for col in model_columns:
-                if col not in query.columns:
-                    query[col] = 0
-
-            prediction = list(clf.predict(query))
+            query = pd.DataFrame(json_)
+            h = FeatureHasher(n_features=10, non_negative=True, input_type='string')
+            x = h.transform(query.T.to_dict().values()).toarray()
+            prediction = list(clf.predict(x))
             prediction = int(prediction[0])
 
             return jsonify({'prediction': prediction})
@@ -60,27 +56,22 @@ def train():
     # using random forest as an example
     # can do the training separately and just update the pickles
     from sklearn.ensemble import RandomForestClassifier as rf
+    from sklearn.feature_extraction import FeatureHasher
 
     df = pd.read_csv(training_data)
     df_ = df[include]
+    y = df_[dependent_variable]
+    df_ = df_[df_.columns.difference([dependent_variable])]
 
-    categoricals = []  # going to one-hot encode categorical variables
-
-    for col, col_type in df_.dtypes.iteritems():
-        if col_type == 'O':
-            categoricals.append(col)
-        else:
-            df_[col].fillna(0, inplace=True)  # fill NA's with 0 for ints/floats, too generic
-
-    # get_dummies effectively creates one-hot encoded variables
-    df_ohe = pd.get_dummies(df_, columns=categoricals, dummy_na=True)
-
-    x = df_ohe[df_ohe.columns.difference([dependent_variable])]
-    y = df_ohe[dependent_variable]
+    h = FeatureHasher(n_features=10, non_negative=True, input_type='string')
+    f = h.transform(df_.T.to_dict().values())
+    x = f.toarray()
+    print(x)
+    print(y)
 
     # capture a list of columns that will be used for prediction
     global model_columns
-    model_columns = list(x.columns)
+    model_columns = list(include)
     joblib.dump(model_columns, model_columns_file_name)
 
     global clf
@@ -105,6 +96,68 @@ def wipe():
     except Exception as e:
         print (str(e))
         return 'Could not remove and recreate the model directory'
+
+@app.route('/data', methods=['PUT', 'OPTIONS'])
+def data():
+    try:
+        json_ = request.json
+        print(request)
+        print(json_)
+
+        if json_ is not None:
+            query = pd.DataFrame(json_)
+            query['datetime'] = datetime.today()
+            datetimeCol = query['datetime']
+            query.drop(labels=['datetime'], axis=1,inplace = True)
+            query.insert(0, 'datetime', datetimeCol)
+
+            print(query)
+            if Path(training_data).is_file():
+                print('file exists')
+                query.to_csv(training_data, mode='a', header=False, index=False)
+            else:
+                print('does not exists')
+                query.to_csv(training_data, mode='w', header=True, index=False)
+
+        return 'Success'
+
+    except Exception as e:
+        print (str(e))
+        return 'Could not add new point'
+
+@app.route('/click', methods=['PUT'])
+def click():
+    try:
+        json_ = request.json
+        print(request)
+        print(json_)
+
+        if json_ is not None:
+            query = pd.DataFrame(json_)
+            now = datetime.today()
+
+            df = pd.read_csv(training_data)
+            if 'worksClicked' not in df.columns:
+                df['worksClicked'] = 0
+
+            row_index_found = df[df['fingerprint'] == int(query['fingerprint'])].index.tolist()
+            string_date = df.iloc[row_index_found[-1], df.columns.get_loc('datetime')]
+            past = datetime.strptime(string_date, "%Y-%m-%d %H:%M:%S.%f")
+
+            datetime_diff = now - past
+            soon_enough = datetime_diff.total_seconds()/3600/2 < 1
+
+            if len(row_index_found) > 0 and soon_enough:
+                df.iloc[row_index_found[-1], df.columns.get_loc('worksClicked')] = 1
+
+            df.to_csv(training_data+'_click', mode='w', header=True, index=False)
+
+        return 'Success'
+
+    except Exception as e:
+        print (str(e))
+        return 'Could not add click'
+
 
 if __name__ == '__main__':
     try:
