@@ -19,6 +19,7 @@ import logging
 app = Flask(__name__)
 app.logger.setLevel(logging.WARNING)
 app.debug = True
+CORS(app, resources=r'/*')
 
 # inputs
 training_data = 'data/custom.csv'
@@ -101,6 +102,7 @@ def wipe():
         return 'Could not remove and recreate the model directory'
 
 @app.route('/data', methods=['PUT', 'OPTIONS'])
+@cross_origin(allow_headers=['Content-Type'])
 def data():
     try:
         json_ = request.json
