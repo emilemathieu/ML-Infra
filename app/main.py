@@ -18,6 +18,7 @@ import logging
 
 app = Flask(__name__)
 app.logger.setLevel(logging.WARNING)
+app.debug = True
 
 # inputs
 training_data = 'data/custom.csv'
