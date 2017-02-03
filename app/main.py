@@ -35,6 +35,7 @@ model_columns = None
 clf = None
 
 @app.route('/predict', methods=['POST'])
+@cross_origin(allow_headers=['Content-Type'])
 def predict():
     if clf:
         try:
@@ -131,6 +132,7 @@ def data():
         return 'Could not add new point'
 
 @app.route('/click', methods=['PUT'])
+@cross_origin(allow_headers=['Content-Type'])
 def click():
     try:
         json_ = request.json
