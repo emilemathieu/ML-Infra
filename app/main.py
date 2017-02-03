@@ -6,7 +6,7 @@ import traceback
 from pathlib import Path
 
 from flask import Flask, request, jsonify
-# from flask_cors import CORS, cross_origin
+from flask_cors import CORS, cross_origin
 import pandas as pd
 from sklearn.externals import joblib
 from sklearn.feature_extraction import FeatureHasher
