@@ -14,8 +14,10 @@ from sklearn.feature_extraction import FeatureHasher
 from datetime import timedelta, datetime
 from flask import make_response, request, current_app
 from functools import update_wrapper
+import logging
 
 app = Flask(__name__)
+app.logger.setLevel(logging.WARNING)
 
 # inputs
 training_data = 'data/custom.csv'
