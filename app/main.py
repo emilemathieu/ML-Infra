@@ -170,7 +170,7 @@ if __name__ == '__main__':
     try:
         port = int(sys.argv[1])
     except Exception as e:
-        port = 80
+        port = 8080
 
     try:
         clf = joblib.load(model_file_name)
@@ -184,4 +184,4 @@ if __name__ == '__main__':
         print (str(e))
         clf = None
 
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='127.0.0.1', port=port, debug=True)
