@@ -10,6 +10,7 @@ from flask_cors import CORS, cross_origin
 import pandas as pd
 from sklearn.externals import joblib
 from sklearn.feature_extraction import FeatureHasher
+from sklearn.feature_extraction import DictVectorizer
 
 from datetime import timedelta, datetime
 from flask import make_response, request, current_app
@@ -22,8 +23,8 @@ app.debug = True
 CORS(app, resources=r'/*')
 
 # inputs
-training_data = 'data/custom.csv'
-include = ['OS', 'browser', 'currentResolution', 'currentResolution', 'language', 'timeZone', 'isFlash']
+training_data = 'users_data.csv'
+include = ['OS', 'browser', 'language', 'timeZone', 'worksClicked']
 dependent_variable = include[-1]
 
 model_directory = 'model'
@@ -37,14 +38,25 @@ clf = None
 @app.route('/predict', methods=['POST'])
 @cross_origin(allow_headers=['Content-Type'])
 def predict():
+    print('predict')
     if clf:
         try:
             json_ = request.json
             query = pd.DataFrame(json_)
+            query = query[include[:-1]]
+            D = query.T.to_dict().values()
+            print(D)
+            # v = DictVectorizer()
+            # F = v.fit_transform(D)
+            # x = F.toarray()
             h = FeatureHasher(n_features=10, non_negative=True, input_type='string')
-            x = h.transform(query.T.to_dict().values()).toarray()
+            x = h.transform(D).toarray()
+            print(x)
             prediction = list(clf.predict(x))
             prediction = int(prediction[0])
+
+            res = add_data_point(prediction, json_)
+            print(res)
 
             return jsonify({'prediction': prediction})
 
@@ -55,24 +67,78 @@ def predict():
         print ('train first')
         return 'no model here'
 
+# @app.route('/data', methods=['PUT', 'OPTIONS'])
+# @cross_origin(allow_headers=['Content-Type'])
+def add_data_point(prediction, json_):
+    print('add_data_point')
+    try:
+        if json_ is not None:
+            query = pd.DataFrame(json_)
+            
+            if Path(training_data).is_file():
+                df = pd.read_csv(training_data)
+                row_index_found = df[df['fingerprint'] == int(query['fingerprint'])].index.tolist()
+
+                if len(row_index_found) > 0:
+
+                    string_date = df.iloc[row_index_found[-1], df.columns.get_loc('datetime')]
+                    past = datetime.strptime(string_date, "%Y-%m-%d %H:%M:%S.%f")
+                    now = datetime.today()
+                    datetime_diff = now - past
+                    soon_enough = datetime_diff.total_seconds() < 3600 * 2
+
+                    if soon_enough:
+                        return 'Too soon to add new point'
+
+            query['datetime'] = datetime.today()
+            datetimeCol = query['datetime']
+            query.drop(labels=['datetime'], axis=1,inplace = True)
+            query.insert(0, 'datetime', datetimeCol)
+
+            query['worksClickedPrediction'] = prediction
+
+            print(query)
+            if Path(training_data).is_file():
+                print('file exists')
+                query.to_csv(training_data, mode='a', header=False, index=False)
+            else:
+                print('does not exists')
+                query.to_csv(training_data, mode='w', header=True, index=False)
+
+        return 'Success'
+
+    except Exception as e:
+        print (str(e))
+        return 'Could not add new point'
 
 @app.route('/train', methods=['GET'])
 def train():
     # using random forest as an example
     # can do the training separately and just update the pickles
     from sklearn.ensemble import RandomForestClassifier as rf
+    from sklearn.linear_model import LogisticRegression as lr
     from sklearn.feature_extraction import FeatureHasher
+    from sklearn.feature_extraction import DictVectorizer
 
     df = pd.read_csv(training_data)
     df_ = df[include]
-    y = df_[dependent_variable]
-    df_ = df_[df_.columns.difference([dependent_variable])]
 
-    h = FeatureHasher(n_features=10, non_negative=True, input_type='string')
-    f = h.transform(df_.T.to_dict().values())
-    x = f.toarray()
-    print(x)
+    y = df_[dependent_variable]
+    y = y.fillna(value=0);
     print(y)
+    df_ = df_[df_.columns.difference([dependent_variable])]
+    
+    D = df_.T.to_dict().values()
+    print(D)
+    h = FeatureHasher(n_features=10, non_negative=True, input_type='string')
+    f = h.transform(D)
+    x = f.toarray()
+    # print(x)
+
+    # v = DictVectorizer()
+    # F = v.fit_transform(D)
+    # x = F.toarray()
+    print(x)
 
     # capture a list of columns that will be used for prediction
     global model_columns
@@ -80,7 +146,8 @@ def train():
     joblib.dump(model_columns, model_columns_file_name)
 
     global clf
-    clf = rf()
+    # clf = rf()
+    clf = lr()
     start = time.time()
     clf.fit(x, y)
     print ('Trained in %.1f seconds' % (time.time() - start))
@@ -102,34 +169,6 @@ def wipe():
         print (str(e))
         return 'Could not remove and recreate the model directory'
 
-@app.route('/data', methods=['PUT', 'OPTIONS'])
-@cross_origin(allow_headers=['Content-Type'])
-def data():
-    try:
-        json_ = request.json
-        print(request)
-        print(json_)
-
-        if json_ is not None:
-            query = pd.DataFrame(json_)
-            query['datetime'] = datetime.today()
-            datetimeCol = query['datetime']
-            query.drop(labels=['datetime'], axis=1,inplace = True)
-            query.insert(0, 'datetime', datetimeCol)
-
-            print(query)
-            if Path(training_data).is_file():
-                print('file exists')
-                query.to_csv(training_data, mode='a', header=False, index=False)
-            else:
-                print('does not exists')
-                query.to_csv(training_data, mode='w', header=True, index=False)
-
-        return 'Success'
-
-    except Exception as e:
-        print (str(e))
-        return 'Could not add new point'
 
 @app.route('/click', methods=['PUT'])
 @cross_origin(allow_headers=['Content-Type'])
@@ -152,12 +191,12 @@ def click():
             past = datetime.strptime(string_date, "%Y-%m-%d %H:%M:%S.%f")
 
             datetime_diff = now - past
-            soon_enough = datetime_diff.total_seconds()/3600/2 < 1
+            soon_enough = datetime_diff.total_seconds() < 3600 * 2
 
             if len(row_index_found) > 0 and soon_enough:
                 df.iloc[row_index_found[-1], df.columns.get_loc('worksClicked')] = 1
 
-            df.to_csv(training_data+'_click', mode='w', header=True, index=False)
+            df.to_csv(training_data, mode='w', header=True, index=False)
 
         return 'Success'
 
@@ -165,6 +204,9 @@ def click():
         print (str(e))
         return 'Could not add click'
 
+@app.route("/")
+def hello():
+    return "Hello World!"
 
 if __name__ == '__main__':
     try:
