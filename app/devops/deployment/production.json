@@ -1,0 +1,13 @@
+{
+  "apps" : [{
+    "name"        : "ubuntu",
+    "script"      : "/home/ML-Infra/current/index.js",
+    "args"        : [],
+    "watch"       : false,
+    "node_args"   : "--harmony",
+    "merge_logs"  : true,
+    "env": {
+      "NODE_ENV": "production",
+    }
+  }]
+}

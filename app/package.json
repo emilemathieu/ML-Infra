@@ -1,0 +1,25 @@
+{
+  "name": "ML-Infra",
+  "version": "1.0.0",
+  "description": "",
+ "scripts": {
+    "start": "pm2 startOrRestart devops/deployment/dev.json",
+    "deploy:production": "cd devops/deployment && ../../node_modules/shipit-cli/bin/shipit production deploy && ../../node_modules/shipit-cli/bin/shipit production launchpm2 && cd ../.."
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emilemathieu/ML-Infra.git"
+  },
+  "author": "Emile Mathieu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emilemathieu/ML-Infra/issues"
+  },
+  "homepage": "https://github.com/emilemathieu/ML-Infra#readme",
+  "devDependencies": {
+    "shipit-cli": "^2.0.0",
+    "shipit-deploy": "^2.4.0",
+    "shipit-pm2": "0.0.4"
+  }
+}
