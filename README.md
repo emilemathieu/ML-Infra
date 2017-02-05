@@ -1,26 +1,5 @@
 # ML-Infra
 
-## Config
-```
-sudo apt-get update
-sudo apt-get install -y python3-pip python3-venv nginx nodejs npm nodejs-legacy
-sudo npm install -g pm2
-
-mkdir environments
-cd environments
-
-pyvenv --without-pip venv
-source venv/bin/activate
-curl https://bootstrap.pypa.io/get-pip.py | python
-deactivate
-source venv/bin/activate
-
-git clone https://github.com/emilemathieu/ML-Infra.git
-cd ML-Infra/app
-pip install -r requirements.txt
-```
-
-
 ## Development
 
 Add the project address to your hosts:
