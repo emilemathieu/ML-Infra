@@ -1,0 +1,3 @@
+jdauphant.nginx,v2.7.4
+ANXS.build-essential,v1.0.2
+ANXS.generic-users,v1.0.5

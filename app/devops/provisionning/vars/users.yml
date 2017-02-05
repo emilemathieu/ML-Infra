@@ -1,0 +1,7 @@
+genericusers_users:
+  - name: "EmileMathieu"
+    groups: ["root", "sudo"]
+    shell: "/bin/bash"
+    home: "/home/"
+    ssh_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDR9E0tNaYv1PKDvqflW9TEBo8c8bIK6iNA6LXawGgqndMHtqK5yLloss43wrQ+Ixeqzo89Ds1U1L1jB3mJrgch+WlyPWzain1Q53YWhvj3x09mjLWcpvMsXkjek6AQtgFUxAAbNwUgdmzX0MEXBE08aS3hI3AlrVs8JID3z5AtghsjN5vYn3K+sjdLsMJQGSTkkiLONCcUfg4dwUP/Yc9nAnB+atwAo2OGMdqv3yzTBiusPsehPwypEFDo7J6VwL2NTx0HIo4iDLhipYWzbW9QKskw7d1x1V0A6yyqddmlzm7S7RUW6Oz86mS+D3jxOy3zrYAx0leDXj0YzAg4BWLR EmileMathieu@emiles-mbp.home"
