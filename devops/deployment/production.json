@@ -1,7 +1,7 @@
 {
   "apps" : [{
     "name"        : "ubuntu",
-    "script"      : "/home/ML-Infra/current/main.py",
+    "script"      : "/home/ubuntu/ML-Infra/current/main.py",
     "args"        : [],
     "watch"       : false,
     "node_args"   : "--harmony",
