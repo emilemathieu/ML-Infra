@@ -64,7 +64,7 @@ ansible-galaxy install -r requirements.txt --force
 
 Run playbook:
 ```
-ansible-playbook playbook.yml -i inventory/production -vvvv
+ansible-playbook playbook.yml -i inventory/production --user=ubuntu -vvvv
 ```
 
 ### Deploy
