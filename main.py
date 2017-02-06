@@ -24,7 +24,7 @@ app.debug = True
 CORS(app, resources=r'/*')
 
 # inputs
-training_data = 'users_data.csv'
+training_data = '/home/ubuntu/users_data.csv'
 include = ['OS', 'browser', 'language', 'timeZone', 'worksClicked']
 dependent_variable = include[-1]
 
