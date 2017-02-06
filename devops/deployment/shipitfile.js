@@ -21,9 +21,11 @@ module.exports = (shipit) => {
   });
 
   shipit.task('launchpm2', () => {
-    shipit.remote('pm2 startOrRestart '
-    + CURRENT_RELEASE_FOLDER
-    + '/devops/deployment/' + shipit.environment + '.json');
+    // shipit.remote('pm2 start '
+    // + CURRENT_RELEASE_FOLDER
+    // + '/devops/deployment/' + shipit.environment + '.json');
+  shipit.remote('source /home/venvs/myenv/bin/activate &&' +
+   'pm2 start ' + CURRENT_RELEASE_FOLDER + '/devops/deployment/' + shipit.environment + '.json');
   });
 
   shipit.on('deploy', () => {

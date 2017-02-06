@@ -4,10 +4,10 @@
     "script"      : "/home/ubuntu/ML-Infra/current/main.py",
     "args"        : [],
     "watch"       : false,
-    "node_args"   : "--harmony",
+    // "node_args"   : "--harmony",
     "merge_logs"  : true,
-    "env": {
-      "NODE_ENV": "production",
-    }
+    // "env": {
+    //   "NODE_ENV": "production",
+    // }
   }]
 }
