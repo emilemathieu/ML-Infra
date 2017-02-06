@@ -50,7 +50,7 @@ def predict():
             # v = DictVectorizer()
             # F = v.fit_transform(D)
             # x = F.toarray()
-            h = FeatureHasher(n_features=10, non_negative=True, input_type='string')
+            h = FeatureHasher(n_features=10, non_negative=True)
             x = h.transform(D).toarray()
             print(x)
             prediction = list(clf.predict(x))
@@ -65,7 +65,7 @@ def predict():
             return jsonify({'error': str(e), 'trace': traceback.format_exc()})
     else:
         print ('train first')
-        add_data_point(np.nan, json_)
+        add_data_point(np.nan, request.json)
         return 'no model here'
 
 # @app.route('/data', methods=['PUT', 'OPTIONS'])
@@ -131,7 +131,7 @@ def train():
     
     D = df_.T.to_dict().values()
     print(D)
-    h = FeatureHasher(n_features=10, non_negative=True, input_type='string')
+    h = FeatureHasher(n_features=10, non_negative=True)
     f = h.transform(D)
     x = f.toarray()
     # print(x)

@@ -13,10 +13,10 @@ Vagrant.configure("2") do |config|
 
   config.ssh.forward_agent = true
 
-  config.vm.synced_folder "../..", "/home/ML-Infra/current", type: "nfs"
+  config.vm.synced_folder "../..", "/home/ubuntu/ML-Infra/current", type: "nfs"
 
   config.vm.provider "virtualbox" do |v|
-    v.name = "worldlink-backend"
+    v.name = "ml-infra"
     v.customize ["modifyvm", :id, "--cpuexecutioncap", $EXEC_CAP]
     v.customize ["modifyvm", :id, "--memory", $MEMORY]
     v.customize ["modifyvm", :id, "--cpus", $CPUS]
