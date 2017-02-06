@@ -145,6 +145,8 @@ def train():
 
     # capture a list of columns that will be used for prediction
     global model_columns
+    if not os.path.exists('model'):
+        os.makedirs('model')
     model_columns = list(include)
     joblib.dump(model_columns, model_columns_file_name)
 

@@ -44,7 +44,7 @@ Add the project address to your hosts:
 sudo /bin/bash -c 'echo "34.250.87.12  ml-infra.prod" >> /private/etc/hosts'
 ```
 
-### Access
+### Server Access
 ```
 ssh-add AWS_KEY.pem
 ssh ubuntu@ml-infra.prod
@@ -67,7 +67,7 @@ Run playbook:
 ansible-playbook playbook.yml -i inventory/production --user=ubuntu -vvvv
 ```
 
-### Deploy
+### Deployment
 
 ```
 npm install
