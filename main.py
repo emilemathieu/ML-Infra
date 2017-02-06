@@ -63,7 +63,7 @@ def predict():
             return jsonify({'prediction': prediction, 'class_label': class_label})
 
         except Exception as e:
-
+            add_data_point(np.nan, request.json)
             return jsonify({'error': str(e), 'trace': traceback.format_exc()})
     else:
         print ('train first')
