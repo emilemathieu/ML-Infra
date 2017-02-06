@@ -69,7 +69,7 @@ ansible-playbook playbook.yml -i inventory/production --user=ubuntu -vvvv
 
 ### Deploy
 
-### Launch
-``
-pm2 startOrRestart main.py
+```
+npm install
+npm run deploy:production
 ```
