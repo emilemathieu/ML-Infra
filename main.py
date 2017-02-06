@@ -11,6 +11,7 @@ import pandas as pd
 from sklearn.externals import joblib
 from sklearn.feature_extraction import FeatureHasher
 from sklearn.feature_extraction import DictVectorizer
+import numpy as np
 
 from datetime import timedelta, datetime
 from flask import make_response, request, current_app
@@ -55,8 +56,7 @@ def predict():
             prediction = list(clf.predict(x))
             prediction = int(prediction[0])
 
-            res = add_data_point(prediction, json_)
-            print(res)
+            add_data_point(prediction, json_)
 
             return jsonify({'prediction': prediction})
 
@@ -65,6 +65,7 @@ def predict():
             return jsonify({'error': str(e), 'trace': traceback.format_exc()})
     else:
         print ('train first')
+        add_data_point(np.nan, json_)
         return 'no model here'
 
 # @app.route('/data', methods=['PUT', 'OPTIONS'])
