@@ -1,5 +1,9 @@
 # ML-Infra
 
+*The idea of this project is to predict the probability that a user click on the "Works" link on the [emilemathieu.fr](emilemathieu.fr) index webpage.
+To do so, a logistic regression is regurarly fitted on the server, so as to take into account new data.
+This dataset is expanded each time someone reach the index page of [emilemathieu.fr](emilemathieu.fr), by sending to the server basic information such as user's OS, browser, timeZone, language, etc.*
+
 ## Development
 
 Add the project address to your hosts:
