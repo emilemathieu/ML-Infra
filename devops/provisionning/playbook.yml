@@ -61,6 +61,11 @@
         virtualenv: /home/venvs/myenv
         virtualenv_python: python3.5
 
+    - name: Clean cron path
+      file:
+        state: absent
+        path: /etc/cron.d/ansible_auto_train
+
     - name: train model
       cron:
         name: train_model
