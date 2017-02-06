@@ -23,7 +23,7 @@ Then start and provision a **virtual machine**:
 vagrant up
 ```
 
-The NodeJs server is located under `/home//back/current`.
+The flask app is located under `/home/ML-Infra/current`.
 To start the server, you can thus run:
 ```
 vagrant ssh
