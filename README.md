@@ -59,6 +59,8 @@ ssh ubuntu@ml-infra.prod
 First, go to the provisioning folder:
 ```
 cd devops/provisioning
+pip install -U ansible
+brew install node
 ```
 
 Install roles:
