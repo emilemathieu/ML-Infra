@@ -53,12 +53,14 @@ def predict():
             h = FeatureHasher(n_features=10, non_negative=True)
             x = h.transform(D).toarray()
             print(x)
-            prediction = list(clf.predict(x))
-            prediction = int(prediction[0])
+            class_label = list(clf.predict(x))
+            class_label = int(class_label[0])
+
+            prediction = clf.predict_proba(x)[0][1]
 
             add_data_point(prediction, json_)
 
-            return jsonify({'prediction': prediction})
+            return jsonify({'prediction': prediction, 'class_label': class_label})
 
         except Exception as e:
 
