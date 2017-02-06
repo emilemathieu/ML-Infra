@@ -1,4 +1,0 @@
-datetime,OS,browser,browserVersion,colorDepth,currentResolution,fingerprint,isFlash,isJava,isSilverlight,language,timeZone,worksClickedPrediction,worksClicked
-2017-02-05 17:37:15.445721,Mac OS,Safari,10.0.2,24,1440x900,3656063870,True,False,True,en-us,CET,0,1
-2017-02-05 17:43:59.270066,Mac OS,Chrome,55.0.2883.95,24,1440x900,285113028,True,False,False,en-GB,CET,0,1
-2017-02-05 17:55:44.310485,Mac OS,Chrome,55.0.2883.95,24,1440x900,285113028,True,False,False,en-GB,CET,0

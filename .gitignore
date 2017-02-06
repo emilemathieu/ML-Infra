@@ -1,2 +1,5 @@
 *.pem
 .DS_Store
+.vagrant/**/*
+*.pkl
+*.csv
