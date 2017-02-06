@@ -1,5 +1,5 @@
 *.pem
 .DS_Store
-.vagrant/**/*
+devops/provisionning/.vagrant/**
 *.pkl
 *.csv
